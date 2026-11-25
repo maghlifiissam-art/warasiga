@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>وراسيگا — Warasiga | فهم الوراق بالدارجة</title>
+<meta name="description" content="Warasiga reads your receipts, price lists and documents and explains them in plain Moroccan Darija. Hybrid AI: on-device Gemini Nano with cloud fallback, via Firebase AI Logic.">
+<link rel="stylesheet" href="style.css?v=6">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <span class="logo">🧾</span>
+    <div>
+      <h1>وراسيگا</h1>
+      <p class="tagline" data-i18n="tagline">صوّر الورقة… وخليها تتفسر ليك بالدارجة</p>
+    </div>
+  </div>
+  <div class="top-actions">
+    <button id="langToggle" type="button" class="lang-btn">English</button>
+    <div id="engineBadge" class="badge badge-muted">⏳</div>
+  </div>
+</header>
+
+<main class="container">
+
+  <section class="card" id="inputCard">
+    <h2 data-i18n="step1">1️⃣ دخل الورقة</h2>
+
+    <div class="tabs">
+      <button class="tab active" id="tabPhoto" type="button" data-i18n="tabPhoto">📷 تصويرة</button>
+      <button class="tab" id="tabText" type="button" data-i18n="tabText">⌨️ نص</button>
+    </div>
+
+    <div id="panePhoto">
+      <label class="dropzone" id="dropzone">
+        <input type="file" id="fileInput" accept="image/jpeg,image/png" hidden>
+        <div class="dz-inner">
+          <span class="dz-icon">🧾</span>
+          <p><strong data-i18n="dzTitle">كليكي هنا باش تختار تصويرة</strong> <span data-i18n="dzTitle2">ديال تيكي، ليستة د الأثمنة، ولا أي ورقة</span></p>
+          <p class="muted" data-i18n="dzHint">JPEG ولا PNG — مزيان يكون الضو صافي والحرف واضح</p>
+        </div>
+      </label>
+      <div id="previewWrap" class="preview hidden">
+        <img id="preview" alt="preview">
+        <button id="clearImg" type="button" class="btn btn-ghost" data-i18n="clearImg">✕ حيد التصويرة</button>
+      </div>
+    </div>
+
+    <div id="paneText" class="hidden">
+      <textarea id="textInput" rows="7" data-i18n-ph="textPh" placeholder="لسّق هنا النص ديال الورقة… مثلاً: شكة، فاتورة، ليستة أثمنة، ورقة ديال الخدمة…"></textarea>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2 data-i18n="step2">2️⃣ فسّرها ليا</h2>
+    <button id="analyzeBtn" class="btn btn-primary" type="button" disabled data-i18n="analyze">✨ فسّر ليا بالدارجة</button>
+    <p class="muted small" id="analyzeHint" data-i18n="hint">دخل تصويرة ولا نص باش يتفعّل الزر</p>
+    <p class="muted small" id="consentNote" data-i18n="consent">بضغطك على الزر: إلا كان محرك الجهاز جاهز كتتفسر الورقة فجهازك، وإلا كتمشي لـ Google. إلا كانت الورقة حساسة وما بغيتيهاش تمشي، ما تبعثهاش.</p>
+    <div id="status" class="status"></div>
+  </section>
+
+  <section class="card hidden" id="resultCard">
+    <h2 data-i18n="step3">3️⃣ الفهم</h2>
+    <div id="usedEngine" class="engine-line"></div>
+    <div id="result" class="result"></div>
+  </section>
+
+  <section class="card info">
+    <h2 data-i18n="howTitle">كيفاش كيخدم؟</h2>
+    <ul>
+      <li><strong data-i18n="how1a">فالمتصفح ديالك:</strong> <span data-i18n="how1b">إلا كان عندك Chrome جديد، التلخيص كيدار مباشرة فجهازك (Gemini Nano / Prompt API) — بلا ما تمشي التصويرة لشي سيرفر.</span></li>
+      <li><strong data-i18n="how2a">ولا فالسحابة:</strong> <span data-i18n="how2b">إلا ما كانش متوفر، كيخدم بـ Gemini عبر Firebase AI Logic.</span></li>
+      <li data-i18n="how3">وراسيگا بلا قاعدة بيانات ديال الوراق وبلا حسابات: ما كنخزنو شي ورقة ولا نص عندنا. غير تفضيل اللغة كيتسجل فالمتصفح ديالك بوحدك. فحالة السحابة، الورقة كتعالج عند Google (Gemini) على حساب شروط الخدمة ديالهم؛ فحالة الجهاز، ما كتخرج من جهازك.</li>
+      <li data-i18n="how4">إلا كان محرك الجهاز مازال كيتحمّل ولا ما كملش، الطلب كيمشي للسحابة — السطر اللي تحت كل نتيجة كيبين فين تفسرات بالضبط. إلا كانت الورقة حساسة، شوف هاد السطر قبل ما تبعثها.</li>
+      <li data-i18n="how5">النصائح مولدة بالذكاء الاصطناعي وماشي نصيحة قانونية ولا طبية رسمية: تأكد من الورقة الأصلية قبل أي قرار مهم.</li>
+    </ul>
+    <p class="muted small" data-i18n="howFoot">مشروع مفتوح المصدر مبني بـ Firebase AI Logic (Hybrid) لمسابقة #BuildHybridAI 2026.</p>
+  </section>
+</main>
+
+<footer class="footer">
+  <span>وراسيگا — Warasiga · Apache-2.0</span>
+</footer>
+
+<script type="module" src="app.js?v=9"></script>
+</body>
+</html>
